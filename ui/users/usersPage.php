@@ -1,7 +1,8 @@
 <?php
 include '../../config/conn.php';
 
-$sql = "SELECT * FROM user";
+// $sql = "SELECT * FROM user WHERE Role = 'administrator' OR 'petugas'";
+$sql = "SELECT * FROM user WHERE Role IN ('administrator', 'petugas')";
 $result = $conn->query($sql);
 ?>
 

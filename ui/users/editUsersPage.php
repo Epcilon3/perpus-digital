@@ -2,10 +2,14 @@
 include '../../config/conn.php';
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    
-    $sql = "SELECT * FROM user WHERE UserID = $id";
-    $result = $conn->query($sql);
+    $id = intval($_GET['id']); // Pastikan ID berupa integer
+
+    // Gunakan Prepared Statement untuk keamanan
+    $sql = "SELECT * FROM user WHERE UserID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -13,6 +17,7 @@ if (isset($_GET['id'])) {
         echo "<script>alert('User tidak ditemukan!'); window.location.href='usersPage.php';</script>";
         exit();
     }
+    $stmt->close();
 } else {
     echo "<script>alert('ID tidak valid!'); window.location.href='usersPage.php';</script>";
     exit();
@@ -20,7 +25,7 @@ if (isset($_GET['id'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,11 +39,11 @@ if (isset($_GET['id'])) {
 
         <div class="card p-4 shadow-sm">
             <form action="../../controller/editUsersCont.php" method="POST">
-                <input type="hidden" name="id" value="<?= $row['UserID']; ?>">
+                <input type="hidden" name="id" value="<?= htmlspecialchars($row['UserID']); ?>">
 
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" value="<?= $row['Username']; ?>" readonly>
+                    <input type="text" class="form-control" id="username" name="username" value="<?= htmlspecialchars($row['Username']); ?>" readonly>
                 </div>
 
                 <div class="mb-3">
@@ -46,30 +51,28 @@ if (isset($_GET['id'])) {
                     <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan password baru jika ingin mengubah">
                 </div>
 
-
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="<?= $row['Email']; ?>" required>
+                    <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($row['Email']); ?>" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="namalengkap" class="form-label">Nama Lengkap</label>
-                    <input type="text" class="form-control" id="namalengkap" name="namalengkap" value="<?= $row['NamaLengkap']; ?>" required>
+                    <input type="text" class="form-control" id="namalengkap" name="namalengkap" value="<?= htmlspecialchars($row['NamaLengkap']); ?>" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="alamat" class="form-label">Alamat</label>
-                    <input type="text" class="form-control" id="alamat" name="alamat" value="<?= $row['Alamat']; ?>" required>
+                    <input type="text" class="form-control" id="alamat" name="alamat" value="<?= htmlspecialchars($row['Alamat']); ?>" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="role" class="form-label">Role</label>
                     <select name="role" class="form-select" required>
-                        <option value="petugas" <?= ($row['Role'] == 'petugas') ? 'selected' : ''; ?>>Petugas</option>
-                        <option value="admin" <?= ($row['Role'] == 'admin') ? 'selected' : ''; ?>>Admin</option>
+                        <option value="petugas" <?= ($row['Role'] === 'petugas') ? 'selected' : ''; ?>>Petugas</option>
+                        <option value="admin" <?= ($row['Role'] === 'admin') ? 'selected' : ''; ?>>Admin</option>
                     </select>
                 </div>
-
 
                 <button type="submit" class="btn btn-primary" name="submit">Simpan Perubahan</button>
                 <a href="usersPage.php" class="btn btn-secondary">Batal</a>
