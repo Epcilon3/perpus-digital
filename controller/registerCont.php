@@ -1,43 +1,39 @@
 <?php
-
-var_dump($_POST); // Menampilkan semua data POST yang dikirim
-
 session_start();
 include '../config/conn.php';
 
-if (isset($_SESSION['Username'])) {
-    header("Location: ../loginView.php");
-    exit();
-}
-
 if (isset($_POST['submit'])) {
-    $NamaLengkap = $_POST['NamaLengkap'];
-    $Username = $_POST['Username'];
-    $Password = hash('sha256', $_POST['Password']);
-    $Email = $_POST['Email'];
-    $Alamat = $_POST['Alamat'];
-    $Role = $_POST['Role'];
 
-    // Cek apakah username sudah ada di database
-    $sql = "SELECT * FROM user WHERE username='$Username'";
-    $result = mysqli_query($conn, $sql);
+    $NamaLengkap = mysqli_real_escape_string($conn, $_POST['NamaLengkap']);
+    $Username = mysqli_real_escape_string($conn, $_POST['Username']);
+    $Password = hash('sha256', $_POST['Password']); 
+    $Email = mysqli_real_escape_string($conn, $_POST['Email']);
+    $Alamat = mysqli_real_escape_string($conn, $_POST['Alamat']);
+    $Role = 'peminjam'; 
 
-    if (!$result->num_rows > 0) {
-        // Masukkan data ke dalam tabel user
-        $sql = "INSERT INTO user (NamaLengkap, Username, Password, Email,  Alamat, Role) 
-                VALUES ('$NamaLengkap','$Username', '$Password', '$Email',  '$Alamat', '$Role')";
-                // echo $sql;
-        $result = mysqli_query($conn, $sql);
+    $sql = "SELECT * FROM user WHERE LOWER(username) = LOWER(?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $Username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        if ($result) {
-            // Registrasi berhasil, arahkan ke halaman login
+    if ($result->num_rows > 0) {
+        echo "<script>alert('Username sudah terdaftar. Silakan pilih username lain.'); window.history.back();</script>";
+    } else {
+        $sql = "INSERT INTO user (NamaLengkap, Username, Password, Email, Alamat, Role) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssssss", $NamaLengkap, $Username, $Password, $Email, $Alamat, $Role);
+
+        if ($stmt->execute()) {
+            $_SESSION['Username'] = $Username; 
             header("Location: ../loginView.php?message=Registrasi Berhasil");
             exit();
         } else {
-            echo "<script>alert('Terjadi Kesalahan saat melakukan registrasi.')</script>";
+            echo "<script>alert('Terjadi Kesalahan saat melakukan registrasi.');</script>";
         }
-    } else {
-        echo "<script>alert('Username sudah terdaftar.')</script>";
     }
+    $stmt->close();
 }
+$conn->close();
 ?>

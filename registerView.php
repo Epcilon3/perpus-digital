@@ -39,14 +39,7 @@
                 <textarea class="form-control" name="Alamat" id="Alamat" required></textarea>
             </div>
 
-            <div class="mb-3">
-                <label for="Role" class="form-label">Role</label>
-                <select name="Role" class="form-select" required>
-                    <option value="administrator">Admin</option>
-                    <option value="petugas">Petugas</option>
-                    <option value="peminjam">Peminjam</option>
-                </select>
-            </div>
+            
 
             <button type="submit" name="submit" class="btn btn-success w-100">Daftar</button>
 
@@ -54,9 +47,9 @@
                 <a href="loginView.php" class="text-success">Punya Akun?</a>
             </p>
         </form>
+        
     </div>
 
-    <!-- Tambahkan CDN JS Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0L1eY6z1b7D2xu9OJo5joFSH91RScQJ37A6gktk5xjyhGJX6" crossorigin="anonymous"></script>
 </body>
 </html>

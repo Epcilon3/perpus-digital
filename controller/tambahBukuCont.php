@@ -11,7 +11,7 @@ if (isset($_POST['submit'])) {
             VALUES ('$judul', '$penulis', '$penerbit', '$tahunTerbit')";
 
     if ($conn->query($sql) === TRUE) {
-        echo "<script>alert('Buku berhasil ditambahkan!'); window.location.href='../ui/page/barangPage.php';</script>";
+        echo "<script>alert('Buku berhasil ditambahkan!'); window.location.href='../ui/page/bukuPage.php';</script>";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }

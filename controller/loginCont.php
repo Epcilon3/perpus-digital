@@ -50,7 +50,5 @@ if (isset($_POST['submit'])) {
 }
 
 
-
-// Jangan lupa untuk menutup koneksi jika diperlukan di bagian akhir script
 $conn->close();
 ?>

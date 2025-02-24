@@ -7,7 +7,8 @@
 </head>
 <body>
     <h1>Admin</h1>
-    <a href="../page/barangPage.php">Pendataan Barang</a>
+    <a href="../page/bukuPage.php">Pendataan Barang</a>
+    <a href="../users/usersPage.php">Pendataan Users</a>
     <a href="">Pendataan Barang</a>
 </body>
 </html>

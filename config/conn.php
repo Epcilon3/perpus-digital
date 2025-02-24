@@ -3,7 +3,7 @@
 $host = 'localhost'; 
 $username = 'root'; 
 $password = '';      
-$database = 'perpusdigital'; 
+$database = 'perpus_digital'; 
 
 $conn = new mysqli($host, $username, $password, $database);
 
